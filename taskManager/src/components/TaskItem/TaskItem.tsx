@@ -16,10 +16,10 @@ export function TaskItem({ task, onDelete, onStatusChange }: TaskItemProps) {
 
         {/* Add dropdown */}
         <div className="d-flex gap-2">
-          <select onChange={(event) => onStatusChange(task.id, event.target.value as TaskStatus)} className="form-select form-select-sm w-auto">
-            <option>Pending</option>
-            <option>In Progress</option>
-            <option>Completed</option>
+          <select value={task.status} onChange={(event) => onStatusChange(task.id, event.target.value as TaskStatus)} className="form-select form-select-sm w-auto">
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
           </select>
 
           {/*  Create dynamic button and attach parent event listener */}
@@ -47,7 +47,7 @@ export function TaskItem({ task, onDelete, onStatusChange }: TaskItemProps) {
 
           {" | "}
 
-            {/* Add due date */}
+          {/* Add due date */}
           <span>
             <strong>Due: </strong>{new Date(task.dueDate).toLocaleDateString()}
           </span>
