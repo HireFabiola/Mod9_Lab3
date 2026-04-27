@@ -16,13 +16,13 @@ export function TaskItem({ task, onDelete }: TaskItemProps) {
         {/* Add dropdown */}
         <div className="d-flex gap-2">
           <select className="form-select form-select-sm w-auto">
-            <option>pending</option>
-            <option>in-progress</option>
-            <option>completed</option>
+            <option>Pending</option>
+            <option>In Progress</option>
+            <option>Completed</option>
           </select>
 
           {/*  Create dynamic button and attach parent event listener */}
-          <button className="btn btn-sm btn-secondary" onClick={() => onDelete(task.id)}>Delete</button>
+          <button className="btn btn-sm btn-secondary" onChange={()=>onStatusChange(task.id, task.status)} onClick={() => onDelete(task.id)}>Delete</button>
         </div>
       </div>
 
