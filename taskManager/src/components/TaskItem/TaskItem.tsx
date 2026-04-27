@@ -1,7 +1,8 @@
 import type { TaskItemProps } from "../../types";
+import type { TaskStatus } from "../../types";
 
 // Function to return display of a single task item
-export function TaskItem({ task, onDelete }: TaskItemProps) {
+export function TaskItem({ task, onDelete, onStatusChange }: TaskItemProps) {
   return (
 
     // Outermost container for whole task item display
@@ -15,14 +16,14 @@ export function TaskItem({ task, onDelete }: TaskItemProps) {
 
         {/* Add dropdown */}
         <div className="d-flex gap-2">
-          <select className="form-select form-select-sm w-auto">
+          <select onChange={(event) => onStatusChange(task.id, event.target.value as TaskStatus)} className="form-select form-select-sm w-auto">
             <option>Pending</option>
             <option>In Progress</option>
             <option>Completed</option>
           </select>
 
           {/*  Create dynamic button and attach parent event listener */}
-          <button className="btn btn-sm btn-secondary" onChange={()=>onStatusChange(task.id, task.status)} onClick={() => onDelete(task.id)}>Delete</button>
+          <button className="btn btn-sm btn-secondary" onClick={() => onDelete(task.id)}>Delete</button>
         </div>
       </div>
 

@@ -25,8 +25,6 @@ export interface TaskItemProps {
 
 // Interface for TaskFilter component
 export interface TaskFilterProps {
-  onFilterChange: (filters: {
-    status?: TaskStatus;
-    priority?: 'low' | 'medium' | 'high';
-  }) => void;
+  onFilterChange: (filterName: 
+    "status" | "priority", value: string) => void;
 }

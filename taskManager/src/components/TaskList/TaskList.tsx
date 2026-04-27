@@ -1,62 +1,92 @@
 import { useState } from "react";
 import tasksData from "../../data/tasks.json";
-import type { Task, TaskStatus } from '../../types/index';
+import type { Task, TaskStatus } from "../../types/index";
 import { TaskItem } from "../TaskItem/TaskItem";
+import { TaskFilter } from "../TaskFilter/TaskFilter";
+
+// Combined type declaration for the filter state object
+type Filters = {status?: TaskStatus; priority?: "low" | "medium" | "high";};
 
 export function TaskList() {
+  // Initialize task list state using task data imported from the JSON test file
+  const [tasks, setTasks] = useState<Task[]>(tasksData as Task[]);
 
+  // Initialize filter state with no filters selected
+  const [filters, setFilters] = useState<Filters>({});
 
-    const [tasks, setTasks] = useState<Task[]>(tasksData as Task[]);
+  // Deletes a selected task by creating a new array that excludes the task
+  // with the matching id, then updates state with that new array
+  const handleDelete = (id: string) => {
+    setTasks((prevTasks) => {
+      const updatedTasks = prevTasks.filter((task) => {
+        return task.id !== id;
+      });
 
-    // Declaration of function to handle deletion of a task
-    const handleDelete = (id: string) => {
-        setTasks((prevTasks) => {
+      return updatedTasks;
+    });
+  };
 
-            // Use pre-defined filter function to iterate through array to keep tasks not matched to selected deletion task id
-            const updatedTasks = prevTasks.filter((task) => {
-                return task.id !== id;
-            });
+  // Updates the status of a selected task by creating a new array where
+  // only the task with the matching id receives the new status
+  const handleStatusChange = (id: string, newStatus: TaskStatus) => {
+    setTasks((prevTasks) => {
+      const updatedTasks = prevTasks.map((task) => {
+        if (task.id === id) {
+          return {
+            ...task,
+            status: newStatus,
+          };
+        }
 
-            // Return new array 
-            return updatedTasks;
-        });
-    };
+        return task;
+      });
 
-    const handleStatusChange = (id: string, newStatus: TaskStatus) => {
-        setTasks((prevTasks) => {
+      return updatedTasks;
+    });
+  };
 
-            // Use pre-defined map function to iterate through array and update
-            // the status of the task that matches the selected id
-            const updatedTasks = prevTasks.map((task) => {
+  // Updates the filter state when either the status or priority dropdown changes
+  const handleFilterChange = (
+    filterName: "status" | "priority",
+    value: string
+  ) => {
+    setFilters((prevFilters) => {
+      return {
+        ...prevFilters,
+        [filterName]: value === "" ? undefined : value,
+      };
+    });
+  };
 
-                // If selected task is found
-                if (task.id === id) {
-                    // Return a NEW object with updated status
-                    return {
-                        id: task.id,
-                        title: task.title,
-                        description: task.description,
-                        status: newStatus,
-                        priority: task.priority,
-                        dueDate: task.dueDate
-                    };
-                }
-                // Otherwise, return the task unchanged
-                return task;
-            });
+  // Creates a filtered version of the task list based on the selected filters
+  const filteredTasks = tasks.filter((task) => {
+    if (filters.status && task.status !== filters.status) {
+      return false;
+    }
 
-            // Return new array
-            return updatedTasks;
-        });
-    };
+    if (filters.priority && task.priority !== filters.priority) {
+      return false;
+    }
 
+    return true;
+  });
 
-    return (
-        <div>
-            {/* Iterate through list and call TaskItem to display each */}
-            {tasks.map((task) => (
-                <TaskItem task={task} onStatusChange={handleStatusChange} onDelete={handleDelete} />
-            ))}
-        </div>
-    );
+  return (
+    <>
+      {/* Renders the filter dropdown component and passes down the filter handler */}
+      <TaskFilter onFilterChange={handleFilterChange} />
+
+      <div className="d-flex gap-2 flex-column">
+        {/* Iterates through the filtered task list and renders one TaskItem per task */}
+        {filteredTasks.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            onStatusChange={handleStatusChange}
+            onDelete={handleDelete}
+          />
+        ))}
+      </div>
+    </>
+  );
 }
