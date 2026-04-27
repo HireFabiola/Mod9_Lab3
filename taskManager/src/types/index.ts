@@ -19,8 +19,8 @@ export interface TaskListProps {
 // Interface for TaskItem component 
 export interface TaskItemProps {
   task: Task;
-  onStatusChange: (taskId: string, newStatus: TaskStatus) => void;
-  onDelete: (taskId: string) => void;
+  onStatusChange?: (taskId: string, newStatus: TaskStatus) => void;
+  onDelete?: (taskId: string) => void;
 }
 
 // Interface for TaskFilter component
